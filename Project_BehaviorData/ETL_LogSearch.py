@@ -6,6 +6,7 @@ from pyspark.sql.types import StructType, StructField, StringType
 from pyspark.sql.window import Window
 from pyspark.sql.functions import *
 
+
 findspark.init()
 
 path = "D:\\log_search\\"
