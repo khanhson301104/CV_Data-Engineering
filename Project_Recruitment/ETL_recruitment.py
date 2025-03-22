@@ -4,9 +4,10 @@ from pyspark import SparkContext
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, udf
 from pyspark.sql.types import TimestampType, StringType
+from cassandra.util import datetime_from_uuid1
+from cassandra.cqltypes import TimeUUIDType
 import time_uuid
 import datetime
-
 
 findspark.init()
 
@@ -35,7 +36,7 @@ data = data.select("ts", 'job_id', 'custom_track', 'bid', 'campaign_id', 'group_
 
 click_data = data.filter(col("custom_track") == "click")
 click_data.createOrReplaceTempView("clickdata")
-click_data = spark.sql("Select date(ts) as date, hour(ts) as hour, job_id, campaign_id, group_id, publisher_id, round(avg(bid), 2) as average, sum(bid) as total_click, count(*) as click_result from clickdata group by date(ts), hour(ts),job_id, custom_track, campaign_id, group_id, publisher_id ")
+click_data = spark.sql("Select date(ts) as date, hour(ts) as hour, job_id, campaign_id, group_id, publisher_id, round(avg(bid), 2) as average, sum(bid) as click_result, count(*) as total_click from clickdata group by date(ts), hour(ts),job_id, custom_track, campaign_id, group_id, publisher_id ")
 
 unqualified_data = data.filter(col("custom_track") == "unqualified")
 unqualified_data.createOrReplaceTempView("unqualifieddata")
